@@ -57,7 +57,7 @@ function run() {
             }
             const { body: githubPrBody, html_url: githubPrUrl } = githubPrPayload;
             if (!githubPrBody) {
-                core.setFailed('Unable to get GitHub Pull Request body.');
+                core.info('Unable to get GitHub Pull Request body.');
                 return;
             }
             if (!githubPrUrl) {
