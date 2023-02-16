@@ -3,7 +3,7 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
         /(?:https?:\/\/)?(?:www\.)?notion\.so\/(?:[0-9a-zA-Z/\-?&=]+)/gm;
     const regexValidNotionId = /[0-9a-f]{32}/gm;
 
-    const notionUrls = text.match(regexNotionUrl);
+    const notionUrls = text.match(regexNotionUrl) || [];
     const foundIds: string[] = []
 
     for (const url of notionUrls) {
