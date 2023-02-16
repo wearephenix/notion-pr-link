@@ -8,8 +8,6 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
 
     for (const url of notionUrls) {
         const _url = new URL(url);
-        // @ts-ignore
-        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         for (const item of [_url.pathname, ..._url.searchParams.values()]) {
             const found = (item || '').match(regexValidNotionId)
             if (found) foundIds.push(found[0])
