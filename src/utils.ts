@@ -4,11 +4,16 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
     const regexValidNotionId = /[0-9a-f]{32}/gm;
 
     const notionUrls = text.match(regexNotionUrl);
+    const foundIds: string[] = []
 
-    const notionIds = notionUrls?.map(url => {
-        const found = new URL(url).pathname.match(regexValidNotionId)
-        return found ? found[0] : ''
+    notionUrls?.forEach(url => {
+        const _url = new URL(url);
+        // @ts-ignore
+        [_url.pathname, ..._url.searchParams.values()].forEach(item => {
+            const found = (item || '').match(regexValidNotionId)
+            if (found) foundIds.push(found[0])
+        })
     });
 
-    return notionIds?.filter(s => s !== '');
+    return foundIds.length > 0 ? foundIds : undefined;
 }
