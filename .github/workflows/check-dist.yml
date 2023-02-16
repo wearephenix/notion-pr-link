@@ -36,6 +36,7 @@ jobs:
           npm run build
           npm run package
 
+      # For this step to succeed, you must run the previous cmd (npm run build and npm run package) locally to include new build files
       - name: Compare the expected and actual dist/ directories
         run: |
           if [ "$(git diff --ignore-space-at-eol dist/ | wc -l)" -gt "0" ]; then
