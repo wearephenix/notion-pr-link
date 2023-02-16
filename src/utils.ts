@@ -6,14 +6,15 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
     const notionUrls = text.match(regexNotionUrl);
     const foundIds: string[] = []
 
-    notionUrls?.forEach(url => {
+    for (const url of notionUrls) {
         const _url = new URL(url);
         // @ts-ignore
-        [_url.pathname, ..._url.searchParams.values()].forEach(item => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        for (const item of [_url.pathname, ..._url.searchParams.values()]) {
             const found = (item || '').match(regexValidNotionId)
             if (found) foundIds.push(found[0])
-        })
-    });
+        }
+    }
 
     return foundIds.length > 0 ? foundIds : undefined;
 }
