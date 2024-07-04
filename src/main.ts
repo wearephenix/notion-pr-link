@@ -76,12 +76,18 @@ async function run(): Promise<void> {
           const listOfPr = [
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
-            ...response.properties[notionPropToUpdate].multi_select,
-            { name: githubPrUrl }
+            ...response.properties[notionPropToUpdate].rich_text,
+            {
+              type: 'text',
+              text: {
+                content: githubPrUrl
+              }
+            }
           ];
           const uniqueListOfPr = listOfPr.filter(
             (value, index, self) =>
-              index === self.findIndex(v => v.name === value.name)
+              index ===
+              self.findIndex(v => v.text.content === value.text.content)
           );
 
           core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
@@ -104,9 +110,8 @@ async function run(): Promise<void> {
             url: githubPrUrl
           }
         }
-      })
-      }
-    );
+      });
+    });
 
     await Promise.all(updateNotionPageTasks);
   } catch (error) {
