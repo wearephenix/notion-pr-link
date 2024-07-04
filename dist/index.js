@@ -97,6 +97,24 @@ function run() {
                             }
                         });
                     }
+                    if (response.properties[notionPropToUpdate].type === 'rich_text') {
+                        const listOfPr = [
+                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                            // @ts-ignore
+                            ...response.properties[notionPropToUpdate].multi_select,
+                            { name: githubPrUrl }
+                        ];
+                        const uniqueListOfPr = listOfPr.filter((value, index, self) => index === self.findIndex(v => v.name === value.name));
+                        core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
+                        return notion.pages.update({
+                            page_id: pageId,
+                            properties: {
+                                [notionPropToUpdate]: {
+                                    multi_select: uniqueListOfPr
+                                }
+                            }
+                        });
+                    }
                 }
                 return notion.pages.update({
                     page_id: pageId,
