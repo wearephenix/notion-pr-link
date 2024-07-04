@@ -103,14 +103,17 @@ function run() {
                             // @ts-ignore
                             ...response.properties[notionPropToUpdate].rich_text,
                             {
-                                type: 'text',
-                                text: {
-                                    content: githubPrUrl
+                                type: 'mention',
+                                mention: {
+                                    type: 'link_preview',
+                                    link_preview: {
+                                        url: githubPrUrl
+                                    }
                                 }
                             }
                         ];
                         const uniqueListOfPr = listOfPr.filter((value, index, self) => index ===
-                            self.findIndex(v => v.text.content === value.text.content));
+                            self.findIndex(v => v.mention.link_preview.url === v.mention.link_preview.url));
                         core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
                         return notion.pages.update({
                             page_id: pageId,
