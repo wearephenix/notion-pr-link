@@ -7,6 +7,7 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
 
 
     const notionUrls = text.match(regexNotionUrl) || [];
+    core.info('Notion URLs found in the text: ' + notionUrls.join(', '));
     const foundIds: string[] = []
 
     for (const url of notionUrls) {
@@ -17,5 +18,6 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
         }
     }
 
+    core.info('Notion IDs found in the text: ' + foundIds.join(', '))
     return foundIds.length > 0 ? foundIds : undefined;
 }
