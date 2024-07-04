@@ -10,6 +10,7 @@ async function run(): Promise<void> {
     const githubPrPayload = github?.context?.payload?.pull_request;
 
     core.debug(`Github event payload: ${JSON.stringify(github?.context)}`);
+    console.log(`Github event payload: ${JSON.stringify(github?.context)}`);
 
     if (!githubPrPayload) {
       core.setFailed('Unable to resolve GitHub Pull Request payload.');
@@ -39,14 +40,18 @@ async function run(): Promise<void> {
       `Extracted Notion page ids: ${JSON.stringify(extractedPageIds)}`
     );
 
+    console.log(`Extracted Notion page ids: ${JSON.stringify(extractedPageIds)}`);
+
     if (notionSecret === 'test') {
       core.info('This is a test. Skipping Notion API call.');
       return;
     }
 
     const notion = new Client({ auth: notionSecret });
-    const updateNotionPageTasks = extractedPageIds.map(async pageId =>
-      notion.pages.update({
+    const updateNotionPageTasks = extractedPageIds.map(async pageId => {
+      const response = await notion.pages.retrieve({ page_id: pageId });
+      console.log(`Retrieved Notion page: ${JSON.stringify(response)}`);
+      return notion.pages.update({
         page_id: pageId,
         properties: {
           [notionPropToUpdate]: {
@@ -54,6 +59,7 @@ async function run(): Promise<void> {
           }
         }
       })
+      }
     );
 
     await Promise.all(updateNotionPageTasks);
