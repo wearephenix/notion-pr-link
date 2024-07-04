@@ -48,6 +48,26 @@ async function run(): Promise<void> {
     const updateNotionPageTasks = extractedPageIds.map(async pageId => {
       const response = await notion.pages.retrieve({ page_id: pageId });
       core.debug(`Retrieved Notion page: ${JSON.stringify(response)}`);
+      if ('properties' in response) {
+        if (response.properties[notionPropToUpdate].type === 'multi_select') {
+          const listOfPr = [
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-ignore
+            ...response.properties[notionPropToUpdate].multi_select,
+            githubPrUrl
+          ];
+          return notion.pages.update({
+            page_id: pageId,
+            properties: {
+              [notionPropToUpdate]: {
+                multi_select: listOfPr.filter(
+                  (value, index) => listOfPr.indexOf(value) === index
+                )
+              }
+            }
+          });
+        }
+      }
       return notion.pages.update({
         page_id: pageId,
         properties: {
