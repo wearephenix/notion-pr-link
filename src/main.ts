@@ -96,7 +96,7 @@ async function run(): Promise<void> {
             page_id: pageId,
             properties: {
               [notionPropToUpdate]: {
-                multi_select: uniqueListOfPr
+                rich_text: uniqueListOfPr
               }
             }
           });
