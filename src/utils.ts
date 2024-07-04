@@ -1,13 +1,9 @@
-import * as core from '@actions/core';
-
 export function getNotionIdsFromText(text: string): string[] | undefined {
     const regexNotionUrl =
         /(?:https?:\/\/)?(?:www\.)?notion\.so\/(?:[0-9a-zA-Z/\-?&=]+)/gm;
     const regexValidNotionId = /[0-9a-f]{32}/gm;
 
-
     const notionUrls = text.match(regexNotionUrl) || [];
-    core.debug('Notion URLs found in the text: ' + notionUrls.join(', '));
     const foundIds: string[] = []
 
     for (const url of notionUrls) {
@@ -18,6 +14,5 @@ export function getNotionIdsFromText(text: string): string[] | undefined {
         }
     }
 
-    core.debug('Notion IDs found in the text: ' + foundIds.join(', '))
     return foundIds.length > 0 ? foundIds : undefined;
 }

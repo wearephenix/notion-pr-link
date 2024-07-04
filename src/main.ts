@@ -9,7 +9,7 @@ async function run(): Promise<void> {
     const notionSecret: string = core.getInput('notion_secret');
     const githubPrPayload = github?.context?.payload?.pull_request;
 
-    core.debug(`[Debug] Github event payload: ${JSON.stringify(github?.context)}`);
+    core.debug(`Github event payload: ${JSON.stringify(github?.context)}`);
 
     if (!githubPrPayload) {
       core.setFailed('Unable to resolve GitHub Pull Request payload.');
@@ -47,31 +47,8 @@ async function run(): Promise<void> {
     const notion = new Client({ auth: notionSecret });
     const updateNotionPageTasks = extractedPageIds.map(async pageId => {
       const response = await notion.pages.retrieve({ page_id: pageId });
-      core.debug(`Retrieved Notion page: ${JSON.stringify(response)}`);
+
       if ('properties' in response) {
-        if (response.properties[notionPropToUpdate].type === 'multi_select') {
-          const listOfPr = [
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            ...response.properties[notionPropToUpdate].multi_select,
-            { name: githubPrUrl }
-          ];
-          const uniqueListOfPr = listOfPr.filter(
-            (value, index, self) =>
-              index === self.findIndex(v => v.name === value.name)
-          );
-
-          core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
-
-          return notion.pages.update({
-            page_id: pageId,
-            properties: {
-              [notionPropToUpdate]: {
-                multi_select: uniqueListOfPr
-              }
-            }
-          });
-        }
         if (response.properties[notionPropToUpdate].type === 'rich_text') {
           let content = '';
           // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -100,8 +77,6 @@ async function run(): Promise<void> {
               index ===
               self.findIndex(v => v.text.link.url === value.text.link.url)
           );
-
-          core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
 
           return notion.pages.update({
             page_id: pageId,

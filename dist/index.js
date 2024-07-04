@@ -50,7 +50,7 @@ function run() {
             const notionPropToUpdate = core.getInput('notion_prop');
             const notionSecret = core.getInput('notion_secret');
             const githubPrPayload = (_b = (_a = github === null || github === void 0 ? void 0 : github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.pull_request;
-            core.debug(`[Debug] Github event payload: ${JSON.stringify(github === null || github === void 0 ? void 0 : github.context)}`);
+            core.debug(`Github event payload: ${JSON.stringify(github === null || github === void 0 ? void 0 : github.context)}`);
             if (!githubPrPayload) {
                 core.setFailed('Unable to resolve GitHub Pull Request payload.');
                 return;
@@ -77,26 +77,7 @@ function run() {
             const notion = new client_1.Client({ auth: notionSecret });
             const updateNotionPageTasks = extractedPageIds.map((pageId) => __awaiter(this, void 0, void 0, function* () {
                 const response = yield notion.pages.retrieve({ page_id: pageId });
-                core.debug(`Retrieved Notion page: ${JSON.stringify(response)}`);
                 if ('properties' in response) {
-                    if (response.properties[notionPropToUpdate].type === 'multi_select') {
-                        const listOfPr = [
-                            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                            // @ts-ignore
-                            ...response.properties[notionPropToUpdate].multi_select,
-                            { name: githubPrUrl }
-                        ];
-                        const uniqueListOfPr = listOfPr.filter((value, index, self) => index === self.findIndex(v => v.name === value.name));
-                        core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
-                        return notion.pages.update({
-                            page_id: pageId,
-                            properties: {
-                                [notionPropToUpdate]: {
-                                    multi_select: uniqueListOfPr
-                                }
-                            }
-                        });
-                    }
                     if (response.properties[notionPropToUpdate].type === 'rich_text') {
                         let content = '';
                         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -121,7 +102,6 @@ function run() {
                         ];
                         const uniqueListOfPr = listOfPr.filter((value, index, self) => index ===
                             self.findIndex(v => v.text.link.url === value.text.link.url));
-                        core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
                         return notion.pages.update({
                             page_id: pageId,
                             properties: {
@@ -156,41 +136,16 @@ run();
 /***/ }),
 
 /***/ 918:
-/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+/***/ ((__unused_webpack_module, exports) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getNotionIdsFromText = void 0;
-const core = __importStar(__nccwpck_require__(2186));
 function getNotionIdsFromText(text) {
     const regexNotionUrl = /(?:https?:\/\/)?(?:www\.)?notion\.so\/(?:[0-9a-zA-Z/\-?&=]+)/gm;
     const regexValidNotionId = /[0-9a-f]{32}/gm;
     const notionUrls = text.match(regexNotionUrl) || [];
-    core.debug('Notion URLs found in the text: ' + notionUrls.join(', '));
     const foundIds = [];
     for (const url of notionUrls) {
         const _url = new URL(url);
@@ -200,7 +155,6 @@ function getNotionIdsFromText(text) {
                 foundIds.push(found[0]);
         }
     }
-    core.debug('Notion IDs found in the text: ' + foundIds.join(', '));
     return foundIds.length > 0 ? foundIds : undefined;
 }
 exports.getNotionIdsFromText = getNotionIdsFromText;

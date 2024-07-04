@@ -20,8 +20,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - run: |
-          cat src/main.ts
       - uses: ./
         with:
           notion_secret: 'test'
