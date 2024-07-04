@@ -16,7 +16,7 @@ async function run(): Promise<void> {
       return;
     }
 
-    const { body: githubPrBody, html_url: githubPrUrl } = githubPrPayload;
+    const { body: githubPrBody, html_url: githubPrUrl, number } = githubPrPayload;
 
     if (!githubPrBody) {
       core.info('Unable to get GitHub Pull Request body.');
@@ -80,8 +80,10 @@ async function run(): Promise<void> {
             {
               type: 'text',
               text: {
-                content: githubPrUrl,
-                link: githubPrUrl
+                content: `Pull Request #${number}`,
+                link: {
+                  url: githubPrUrl
+                }
               }
             }
           ];

@@ -55,7 +55,7 @@ function run() {
                 core.setFailed('Unable to resolve GitHub Pull Request payload.');
                 return;
             }
-            const { body: githubPrBody, html_url: githubPrUrl } = githubPrPayload;
+            const { body: githubPrBody, html_url: githubPrUrl, number } = githubPrPayload;
             if (!githubPrBody) {
                 core.info('Unable to get GitHub Pull Request body.');
                 return;
@@ -105,8 +105,10 @@ function run() {
                             {
                                 type: 'text',
                                 text: {
-                                    content: githubPrUrl,
-                                    link: githubPrUrl
+                                    content: `Pull Request #${number}`,
+                                    link: {
+                                        url: githubPrUrl
+                                    }
                                 }
                             }
                         ];
