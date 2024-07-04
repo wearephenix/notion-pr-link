@@ -80,7 +80,7 @@ async function run(): Promise<void> {
             {
               type: 'text',
               text: {
-                content: `Pull Request #${number}`,
+                content: `\nPull Request #${number}`,
                 link: {
                   url: githubPrUrl
                 }
