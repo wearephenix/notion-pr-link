@@ -73,6 +73,14 @@ async function run(): Promise<void> {
           });
         }
         if (response.properties[notionPropToUpdate].type === 'rich_text') {
+          let content = '';
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
+          if (response.properties[notionPropToUpdate].rich_text.length > 0) {
+            content += '\n';
+          }
+          content += `Pull Request #${number}`;
+
           const listOfPr = [
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-ignore
@@ -80,7 +88,7 @@ async function run(): Promise<void> {
             {
               type: 'text',
               text: {
-                content: `\nPull Request #${number}`,
+                content,
                 link: {
                   url: githubPrUrl
                 }
@@ -90,7 +98,7 @@ async function run(): Promise<void> {
           const uniqueListOfPr = listOfPr.filter(
             (value, index, self) =>
               index ===
-              self.findIndex(v => v.text.content === value.text.content)
+              self.findIndex(v => v.text.link.url === value.text.link.url)
           );
 
           core.debug(`Unique list of PRs: ${JSON.stringify(uniqueListOfPr)}`);
