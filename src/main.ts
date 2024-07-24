@@ -8,6 +8,7 @@ async function run(): Promise<void> {
     const notionPropToUpdate: string = core.getInput('notion_prop');
     const notionSecret: string = core.getInput('notion_secret');
     const githubPrPayload = github?.context?.payload?.pull_request;
+    const repositoryName = github?.context?.repo.repo;
 
     core.debug(`Github event payload: ${JSON.stringify(github?.context)}`);
 
@@ -56,7 +57,7 @@ async function run(): Promise<void> {
           if (response.properties[notionPropToUpdate].rich_text.length > 0) {
             content += '\n';
           }
-          content += `Pull Request #${number}`;
+          content += `Pull Request ${repositoryName}#${number}`;
 
           const listOfPr = [
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment

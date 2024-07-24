@@ -44,12 +44,13 @@ const github = __importStar(__nccwpck_require__(5438));
 const client_1 = __nccwpck_require__(324);
 const utils_1 = __nccwpck_require__(918);
 function run() {
-    var _a, _b;
+    var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const notionPropToUpdate = core.getInput('notion_prop');
             const notionSecret = core.getInput('notion_secret');
             const githubPrPayload = (_b = (_a = github === null || github === void 0 ? void 0 : github.context) === null || _a === void 0 ? void 0 : _a.payload) === null || _b === void 0 ? void 0 : _b.pull_request;
+            const repositoryName = (_c = github === null || github === void 0 ? void 0 : github.context) === null || _c === void 0 ? void 0 : _c.repo.repo;
             core.debug(`Github event payload: ${JSON.stringify(github === null || github === void 0 ? void 0 : github.context)}`);
             if (!githubPrPayload) {
                 core.setFailed('Unable to resolve GitHub Pull Request payload.');
@@ -85,7 +86,7 @@ function run() {
                         if (response.properties[notionPropToUpdate].rich_text.length > 0) {
                             content += '\n';
                         }
-                        content += `Pull Request #${number}`;
+                        content += `Pull Request ${repositoryName}#${number}`;
                         const listOfPr = [
                             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
                             // @ts-ignore
