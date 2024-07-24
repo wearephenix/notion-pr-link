@@ -57,7 +57,7 @@ async function run(): Promise<void> {
           if (response.properties[notionPropToUpdate].rich_text.length > 0) {
             content += '\n';
           }
-          content += `Pull Request ${repositoryName}#${number}`;
+          content += `${repositoryName} : Pull Request #${number}`;
 
           const listOfPr = [
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
